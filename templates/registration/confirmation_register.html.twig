@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Verify your email
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+
+			<div class="col-md-8 offset-md-2 mt-5">
+				<h1 class="text-center">Please verify your email</h1>
+
+				<p class="text-center">You're almost there
+					{{firstName}}
+					!<br>
+					To complete your registration, please check your email and click on the link we sent you to<br>
+					<strong>{{email}}</strong>.</p>
+				<p class="text-center">If you don't see the email, please check your spam folder.</p>
+				<form action="{{path('app_register_resend_confirmation')}}" method="post" id="form-register-resend-confirmation">
+					<input type="hidden" name="email" value="{{ email }}">
+					<input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('resend-confirmation') }}">
+					<p class="text-center">
+						<button type="submit" class="btn btn-primary">Resend email</button>
+					</p>
+					<p class="text-center mt-2" id="form-register-resend-confirmation-msg"></p>
+				</form>
+			</div>
+
+		</div>
+	</div>
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script src="{{ asset('js/resend-confirmation-ajax.js') }}"></script>
+{% endblock %}

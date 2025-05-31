@@ -1,0 +1,16 @@
+{# templates/_message_prototype.html.twig #}
+
+<div class="message-item mb-4">
+	<div class="row">
+		<div class="col-md-4">
+			{{ form_row(form.sendAt, {'row_attr': {'class': 'col form-outline mb-4'}}) }}
+		</div>
+		<div class="col-md-4">
+			{{ form_row(form.sendAtTime, {'row_attr': {'class': 'col form-outline mb-4'}}) }}
+		</div>
+	</div>
+	{{ form_row(form.subject, {'row_attr': {'class': 'col form-outline mb-4'}}) }}
+	{{ form_row(form.message, {'row_attr': {'class': 'col form-outline mb-4'}}) }}
+	{{ form_row(form.attachment, {'row_attr': {'class': 'col form-outline mb-4'}}) }}
+</div>
+<hr>

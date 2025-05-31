@@ -1,0 +1,34 @@
+{% extends 'appBase.html.twig' %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('new-sequence') }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('new-sequence') }}
+{% endblock %}
+
+{% block title %}Edit Sequence
+{% endblock %}
+{% block appTitle %}Modifier une séquence
+{% endblock %}
+
+{% block appContent %}
+	<div class="row">
+		<div class="col">
+			<div class="card sequence-progress">
+				<div class="card-body">
+					<h2 class="card-title mb-3">Modifier une séquence</h2>
+
+					{{ include('sequence/_form.html.twig') }}
+
+					<div class="d-flex justify-content-end my-3">
+						<a class="btn btn-danger" href="{{ path('app_dashboard') }}">back to list</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

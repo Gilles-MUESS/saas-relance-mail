@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recipient{% endblock %}
+
+{% block body %}
+    <h1>Recipient</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ recipient.id }}</td>
+            </tr>
+            <tr>
+                <th>FirstName</th>
+                <td>{{ recipient.firstName }}</td>
+            </tr>
+            <tr>
+                <th>LastName</th>
+                <td>{{ recipient.lastName }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ recipient.email }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_recipient_index') }}">back to list</a>
+
+    <a href="{{ path('app_recipient_edit', {'id': recipient.id}) }}">edit</a>
+
+    {{ include('recipient/_delete_form.html.twig') }}
+{% endblock %}

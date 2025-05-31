@@ -1,0 +1,16 @@
+.profile {
+	position: relative;
+
+	&-initials {
+		background-color: var(--bs-gray-200);
+		margin: 0;
+		width: 120px;
+		height: 120px;
+	}
+
+	&-data-modify-btn {
+		position: absolute;
+		right: 16px;
+		top: 16px;
+	}
+}

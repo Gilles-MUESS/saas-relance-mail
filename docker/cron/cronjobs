@@ -1,0 +1,1 @@
+*/5 * * * * root cd /var/www && /usr/local/bin/php bin/console emails:send-planned >> /var/log/cron.log 2>&1

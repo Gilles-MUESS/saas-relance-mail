@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+
+			<form method="post" class="col-md-6 offset-md-3 mt-5 form-signin">
+				{% if error %}
+					<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+				{% endif %}
+
+				{% if app.user %}
+					<div class="mb-3">
+						You are logged in as
+						{{ app.user.userIdentifier }},
+						<a href="{{ path('app_logout') }}">Logout</a>
+					</div>
+				{% endif %}
+
+				<h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+				<div data-mdb-input-init class="form-outline mb-4">
+					<label for="inputEmail">Email</label>
+					<input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+				</div>
+				<div data-mdb-input-init class="form-outline mb-4">
+					<label for="inputPassword">Password</label>
+					<input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+					<input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+				</div>
+				<button class="btn btn-block btn-primary mb-4" type="submit">
+					Sign in
+				</button>
+
+				<div class="row mb-4">
+					<div
+						class="col offset-md-6 d-flex justify-content-end">
+
+						<!-- Simple link -->
+						<a href="#!">Forgot password?</a>
+					</div>
+				</div>
+
+				<div class="text-center">
+					<p>Not a member?
+						<a href="{{path("app_register")}}">Register</a>
+					</p>
+				</div>
+
+			</form>
+
+		</div>
+	</div>
+{% endblock %}

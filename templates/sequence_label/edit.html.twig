@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit SequenceLabel{% endblock %}
+
+{% block body %}
+    <h1>Edit SequenceLabel</h1>
+
+    {{ include('sequence_label/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_sequence_label_index') }}">back to list</a>
+
+    {{ include('sequence_label/_delete_form.html.twig') }}
+{% endblock %}

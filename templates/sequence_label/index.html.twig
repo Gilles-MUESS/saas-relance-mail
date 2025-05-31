@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SequenceLabel index{% endblock %}
+
+{% block body %}
+    <h1>SequenceLabel index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sequence_label in sequence_labels %}
+            <tr>
+                <td>{{ sequence_label.id }}</td>
+                <td>{{ sequence_label.title }}</td>
+                <td>
+                    <a href="{{ path('app_sequence_label_show', {'id': sequence_label.id}) }}">show</a>
+                    <a href="{{ path('app_sequence_label_edit', {'id': sequence_label.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_sequence_label_new') }}">Create new</a>
+{% endblock %}

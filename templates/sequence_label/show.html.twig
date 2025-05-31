@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SequenceLabel{% endblock %}
+
+{% block body %}
+    <h1>SequenceLabel</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ sequence_label.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ sequence_label.title }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_sequence_label_index') }}">back to list</a>
+
+    <a href="{{ path('app_sequence_label_edit', {'id': sequence_label.id}) }}">edit</a>
+
+    {{ include('sequence_label/_delete_form.html.twig') }}
+{% endblock %}

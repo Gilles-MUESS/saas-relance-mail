@@ -1,0 +1,229 @@
+{% extends 'appBase.html.twig' %}
+
+{% block title %}Hello DashboardController!
+{% endblock %}
+{% block appTitle %}Dashboard
+{% endblock %}
+
+{% block stylesheets %}
+	{{parent()}}
+	{{ encore_entry_link_tags('table') }}
+{% endblock %}
+
+{% block javascripts %}
+	{{parent()}}
+	{{ encore_entry_script_tags('table') }}
+	{{ encore_entry_script_tags('delete-sequence-ajax') }}
+{% endblock %}
+
+
+{% block appContent %}
+	<div class="row mb-3">
+		<div class="col">
+			<div class="card sequence-progress">
+				<div class="card-body">
+					<h2 class="card-title mb-3">Séquences en cours</h2>
+					<div class="d-flex justify-content-between align-items-end mb-2 sequence-progress-info">
+						<p class="m-0">{{sequencesActive|length}}
+							séquences en cours</p>
+						<a href="{{path('app_sequence_new')}}" class="btn btn-primary">+ Créer une séquence</a>
+					</div>
+					<table class="table table-hover" data-toggle="table" data-search="true">
+						<thead>
+							<tr>
+								<th scope="col" data-field="recipient" data-searchable="true" data-sortable="true">Destinataire</th>
+								<th scope="col" data-field="e-mail" data-searchable="true" data-sortable="true">Adresse e-mail</th>
+								<th scope="col" data-sortable="true">Statut</th>
+								<th scope="col" data-sortable="true">Label</th>
+								<th scope="col" data-sortable="true">Premier envoi</th>
+								<th scope="col" data-sortable="true">Prochaine relance</th>
+								<th scope="col">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for sequence in sequencesActive %}
+								{% set firstMessage = sequence.getMessages()|first %}
+								{% if firstMessage %}
+									{% set recipients = sequence.getRecipient() %}
+									{% set firstSendAt = firstMessage.getSendAt() %}
+									{% set firstSendAtDate = firstSendAt ? firstSendAt|date('d/m/Y') : 'Aucun envoi' %}
+									<tr data-sequence-id="{{sequence.id}}">
+										<td>
+											{% for recipient in recipients %}
+												{{recipient.getFirstName()}}
+												{{recipient.getLastName()}}<br>
+											{% endfor %}
+										</td>
+										<td>
+											{% for recipient in recipients %}
+												{{recipient.getEmail()}}<br>
+											{% endfor %}
+										</td>
+										<td>{{sequence.getStatus()}}</td>
+										<td>{{sequence.getLabel().getTitle()}}</td>
+										<td>{{firstMessage.getSendAt()|date('d/m/Y')}}</td>
+										<td>
+											{{nextRelances[sequence.id]|date('d/m/Y')}}
+										</td>
+										<td>
+											<a href="{{path('app_sequence_edit', {'id': sequence.id})}}" class="btn btn-secondary">
+												<i class="bi bi-pencil-fill"></i>
+											</a>
+											<button type="button" class="btn btn-danger delete-sequence-btn" data-sequence-id="{{sequence.id}}" data-bs-toggle="modal" data-bs-target="#deleteSequenceModal">
+												<i class="bi bi-trash-fill"></i>
+											</button>
+										</td>
+									</tr>
+								{% endif %}
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="deleteSequenceModal" tabindex="-1" aria-labelledby="deleteSequenceModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="deleteSequenceModalLabel">Supprimer une séquence</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p>Êtes-vous sûr de vouloir supprimer cette séquence ? Cette action est irréversible.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+					<form method="delete" action="{{ path('app_sequence_delete', {'id': 'sequenceId'}) }}" id="deleteSequenceForm">
+						<input type="hidden" name="_token" value="{{ csrf_token('delete_sequence') }}">
+						<button type="submit" class="btn btn-danger">Supprimer</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-xxl-6 mb-3">
+			<div class="card">
+				<div class="card-body">
+					<h2 class="card-title mb-3">Séquences échouées</h2>
+					<div class="d-flex justify-content-between align-items-end mb-2 sequence-progress-info">
+						<p class="m-0">{{sequencesFail|length}}
+							séquences échouées</p>
+					</div>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th scope="col">Destinataire</th>
+								<th scope="col">Adresse e-mail</th>
+								<th scope="col">Statut</th>
+								<th scope="col">Label</th>
+								<th scope="col">Premier envoi</th>
+								<th scope="col">Prochaine relance</th>
+								<th scope="col">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for sequence in sequencesFail %}
+								{% set firstMessage = sequence.getMessages()|first %}
+								{% if firstMessage %}
+									{% set recipients = sequence.getRecipient() %}
+									{% set firstSendAt = firstMessage.getSendAt() %}
+									{% set firstSendAtDate = firstSendAt ? firstSendAt|date('d/m/Y') : 'Aucun envoi' %}
+									<tr>
+										<td>
+											{% for recipient in recipients %}
+												{{recipient.getFirstName()}}
+												{{recipient.getLastName()}}<br>
+											{% endfor %}
+										</td>
+										<td>
+											{% for recipient in recipients %}
+												{{recipient.getEmail()}}<br>
+											{% endfor %}
+										</td>
+										<td>{{sequence.getStatus()}}</td>
+										<td>{{sequence.getLabel().getTitle()}}</td>
+										<td>{{firstMessage.getSendAt()|date('d/m/Y')}}</td>
+										<td>
+											{# {{sequence.getProchaineRelance()|date('d/m/Y')}} #}
+										</td>
+										<td>
+											<a href="{{path('app_show_sequence', {'id': sequence.id})}}" class="btn btn-secondary">
+												<i class="bi bi-eye-fill"></i>
+											</a>
+											<a href="#" class="btn btn-danger">
+												<i class="bi bi-archive-fill"></i>
+											</a>
+										</td>
+									</tr>
+								{% endif %}
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-xxl-6 mb-3">
+			<div class="card">
+				<div class="card-body">
+					<h2 class="card-title mb-3">Séquences terminées</h2>
+					<div class="d-flex justify-content-between align-items-end mb-2 sequence-progress-info">
+						<p class="m-0">{{sequencesSuccess|length}}
+							séquences terminées</p>
+					</div>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th scope="col">Destinataire</th>
+								<th scope="col">Adresse e-mail</th>
+								<th scope="col">Statut</th>
+								<th scope="col">Label</th>
+								<th scope="col">Premier envoi</th>
+								<th scope="col">Prochaine relance</th>
+								<th scope="col">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for sequence in sequencesSuccess %}
+								{% set firstMessage = sequence.getMessages()|first %}
+								{% if firstMessage %}
+									{% set recipients = sequence.getRecipient() %}
+									{% set firstSendAt = firstMessage.getSendAt() %}
+									{% set firstSendAtDate = firstSendAt ? firstSendAt|date('d/m/Y') : 'Aucun envoi' %}
+									<tr>
+										<td>
+											{% for recipient in recipients %}
+												{{recipient.getFirstName()}}
+												{{recipient.getLastName()}}<br>
+											{% endfor %}
+										</td>
+										<td>
+											{% for recipient in recipients %}
+												{{recipient.getEmail()}}<br>
+											{% endfor %}
+										</td>
+										<td>{{sequence.getStatus()}}</td>
+										<td>{{sequence.getLabel().getTitle()}}</td>
+										<td>{{firstMessage.getSendAt()|date('d/m/Y')}}</td>
+										<td>
+											<a href="{{path('app_show_sequence', {'id': sequence.id})}}" class="btn btn-secondary">
+												<i class="bi bi-eye-fill"></i>
+											</a>
+											<a href="#" class="btn btn-danger">
+												<i class="bi bi-archive-fill"></i>
+											</a>
+										</td>
+									</tr>
+								{% endif %}
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

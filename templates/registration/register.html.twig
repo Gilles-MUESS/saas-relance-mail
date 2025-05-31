@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+{% form_theme registrationForm 'bootstrap_5_layout.html.twig' %}
+
+
+{% block title %}Register
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+
+			{% for flash_error in app.flashes('verify_email_error') %}
+				<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+			{% endfor %}
+
+			{{ form_start(registrationForm, { 'attr' : { 'class': 'col-md-6 offset-md-3 mt-5 form-register' } }) }}
+
+			{{ form_errors(registrationForm) }}
+
+			<h1 class="h3 mb-3 font-weight-normal">Register</h1>
+
+			<div class="row">
+				{{ form_row(registrationForm.userInfo.firstName) }}
+				{{ form_row(registrationForm.userInfo.lastName) }}
+			</div>
+			{{ form_row(registrationForm.userInfo.company) }}
+			<hr class="my-5">
+			{{ form_row(registrationForm.userInfo.address) }}
+			{{ form_row(registrationForm.userInfo.address2) }}
+			<div class="row">
+				{{ form_row(registrationForm.userInfo.cp) }}
+				{{ form_row(registrationForm.userInfo.city) }}
+			</div>
+			<hr class="my-5">
+			{{ form_row(registrationForm.email) }}
+
+			{{ form_row(registrationForm.plainPassword, {
+            label: 'Password'
+        }) }}
+
+			<button type="submit" class="btn btn-block btn-primary mb-4">Register</button>
+
+			<div class="text-center">
+				<p>Already a member?
+					<a href="{{path("app_login")}}">Please log in</a>
+				</p>
+			</div>
+
+			{{ form_end(registrationForm) }}
+
+		</div>
+	</div>
+
+{% endblock %}

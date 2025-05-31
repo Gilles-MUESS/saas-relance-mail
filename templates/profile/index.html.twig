@@ -1,0 +1,85 @@
+{% extends 'appBase.html.twig' %}
+
+{% block title %}Hello ProfileController!
+{% endblock %}
+{% block appTitle %}Profil
+{% endblock %}
+
+{% block stylesheets %}
+	{{parent()}}
+{% endblock %}
+
+{% block javascripts %}
+	{{parent()}}
+{% endblock %}
+
+
+{% block appContent %}
+	<div class="row mb-3">
+		<div class="col">
+			<div class="card profile mb-3">
+				<div class="card-body d-flex align-items-center gap-5">
+					<div class="profile-name d-flex flex-column justify-content-center align-items-center gap-3">
+						<div class="profile-initials circle h2 d-flex justify-content-center align-items-center">
+							{{userInitials}}
+						</div>
+						<h2>{{userInfos.firstName}}
+							{{userInfos.lastName}}</h2>
+					</div>
+					<div class="profile-infos">
+						<div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+							<div class="profile-infos-group">
+								<p class="m-0 profile-infos-label">
+									E-mail
+								</p>
+								<p class="m-0 fw-semibold profile-infos-label-data">
+									{{user.email}}
+								</p>
+							</div>
+							<div class="profile-infos-group">
+								<p class="m-0 profile-infos-label">
+									Entreprise
+								</p>
+								<p class="m-0 fw-semibold profile-infos-label-data">
+									{{userInfos.company}}
+								</p>
+							</div>
+						</div>
+						<div class="profile-infos-group">
+							<p class="m-0 profile-infos-label">
+								Adresse
+							</p>
+							<p class="m-0 fw-semibold profile-infos-label-data">
+								{{userInfos.address}},
+								{{userInfos.cp}}
+								{{userInfos.city}}
+							</p>
+						</div>
+					</div>
+				</div>
+				<a href="#" title="Modifier le profil" class="btn btn-primary with-ico profile-data-modify-btn">
+					<i class="bi bi-pencil-fill"></i>
+					Modifier
+				</a>
+			</div>
+			<div class="card profile-signatures mb-3">
+				<div class="card-body">
+					<h2>Signatures</h2>
+
+				</div>
+			</div>
+			<div class="card profile-recipients mb-3">
+				<div class="card-body">
+					<h2>Destinaitaires</h2>
+
+				</div>
+			</div>
+			<div class="card profile-customs mb-3">
+				<div class="card-body">
+					<h2>Personnalisation</h2>
+
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
