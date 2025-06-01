@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/sequence') ]
+#[Route('/app/sequence') ]
 final class SequenceController extends AbstractController {
 	public function __construct( private UserService $userService ) {
 	}
