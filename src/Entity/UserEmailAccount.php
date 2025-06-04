@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserEmailAccountRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,9 +33,20 @@ class UserEmailAccount {
 	#[ORM\Column(length: 255, nullable: true) ]
 	private ?string $provider_user_id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'userEmailAccounts')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+	#[ORM\ManyToOne(inversedBy: 'userEmailAccounts') ]
+	#[ORM\JoinColumn(nullable: false) ]
+	private ?User $user = null;
+
+    /**
+     * @var Collection<int, Sequence>
+     */
+    #[ORM\OneToMany(targetEntity: Sequence::class, mappedBy: 'userEmailAccount')]
+    private Collection $sequences;
+
+    public function __construct()
+    {
+        $this->sequences = new ArrayCollection();
+    }
 
 	public function getId(): ?int {
 		return $this->id;
@@ -99,14 +112,42 @@ class UserEmailAccount {
 		return $this;
 	}
 
-    public function getUser(): ?User
+	public function getUser(): ?User {
+		return $this->user;
+	}
+
+	public function setUser( ?User $user ): static {
+		$this->user = $user;
+
+		return $this;
+	}
+
+    /**
+     * @return Collection<int, Sequence>
+     */
+    public function getSequences(): Collection
     {
-        return $this->user;
+        return $this->sequences;
     }
 
-    public function setUser(?User $user): static
+    public function addSequence(Sequence $sequence): static
     {
-        $this->user = $user;
+        if (!$this->sequences->contains($sequence)) {
+            $this->sequences->add($sequence);
+            $sequence->setUserEmailAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSequence(Sequence $sequence): static
+    {
+        if ($this->sequences->removeElement($sequence)) {
+            // set the owning side to null (unless already changed)
+            if ($sequence->getUserEmailAccount() === $this) {
+                $sequence->setUserEmailAccount(null);
+            }
+        }
 
         return $this;
     }

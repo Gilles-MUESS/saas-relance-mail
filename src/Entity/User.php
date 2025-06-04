@@ -68,18 +68,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 	#[ORM\OneToOne(mappedBy: 'user', cascade: [ 'persist', 'remove' ]) ]
 	private ?UserInfo $userInfo = null;
 
-    /**
-     * @var Collection<int, UserEmailAccount>
-     */
-    #[ORM\OneToMany(targetEntity: UserEmailAccount::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $userEmailAccounts;
+	/**
+	 * @var Collection<int, UserEmailAccount>
+	 */
+	#[ORM\OneToMany(targetEntity: UserEmailAccount::class, mappedBy: 'user', orphanRemoval: true) ]
+	private Collection $userEmailAccounts;
 
 	public function __construct() {
 		$this->signatures = new ArrayCollection();
 		$this->sequenceLabels = new ArrayCollection();
 		$this->sequences = new ArrayCollection();
 		$this->recipients = new ArrayCollection();
-        $this->userEmailAccounts = new ArrayCollection();
+		$this->userEmailAccounts = new ArrayCollection();
 	}
 
 	public function getId(): ?int {
@@ -288,33 +288,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 		return $this;
 	}
 
-    /**
-     * @return Collection<int, UserEmailAccount>
-     */
-    public function getUserEmailAccounts(): Collection
-    {
-        return $this->userEmailAccounts;
-    }
+	/**
+	 * @return Collection<int, UserEmailAccount>
+	 */
+	public function getUserEmailAccounts(): Collection {
+		return $this->userEmailAccounts;
+	}
 
-    public function addUserEmailAccount(UserEmailAccount $userEmailAccount): static
-    {
-        if (!$this->userEmailAccounts->contains($userEmailAccount)) {
-            $this->userEmailAccounts->add($userEmailAccount);
-            $userEmailAccount->setUser($this);
-        }
+	public function addUserEmailAccount( UserEmailAccount $userEmailAccount ): static {
+		if ( ! $this->userEmailAccounts->contains( $userEmailAccount ) ) {
+			$this->userEmailAccounts->add( $userEmailAccount );
+			$userEmailAccount->setUser( $this );
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function removeUserEmailAccount(UserEmailAccount $userEmailAccount): static
-    {
-        if ($this->userEmailAccounts->removeElement($userEmailAccount)) {
-            // set the owning side to null (unless already changed)
-            if ($userEmailAccount->getUser() === $this) {
-                $userEmailAccount->setUser(null);
-            }
-        }
+	public function removeUserEmailAccount( UserEmailAccount $userEmailAccount ): static {
+		if ( $this->userEmailAccounts->removeElement( $userEmailAccount ) ) {
+			// set the owning side to null (unless already changed)
+			if ( $userEmailAccount->getUser() === $this ) {
+				$userEmailAccount->setUser( null );
+			}
+		}
 
-        return $this;
-    }
+		return $this;
+	}
+
+	public function getUserEmailAccountByProvider( string $provider ): Collection {
+		$userEmailAccounts = $this->getUserEmailAccounts();
+
+		return $userEmailAccounts->filter( function (UserEmailAccount $account) use ($provider) {
+			return $account->getProvider() === $provider;
+		} );
+	}
 }

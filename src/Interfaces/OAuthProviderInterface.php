@@ -12,6 +12,8 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
  * It should be implemented by any class that handles OAuth authentication and user information retrieval.
  */
 interface OAuthProviderInterface {
+	const PROVIDER_GOOGLE = 'google';
+
 	/**
 	 * Get the authorization URL for the OAuth provider.
 	 *

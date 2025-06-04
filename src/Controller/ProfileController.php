@@ -22,8 +22,9 @@ final class ProfileController extends AbstractController {
 		$user = $this->userService->getUser();
 		$userInitials = $this->userService->getInitials();
 		$userInfos = $user->getUserInfo();
+		$userEmailAccount = $user->getUserEmailAccounts();
 
-		return $this->render( 'profile/index.html.twig', [ 
+		return $this->render( 'profile/index.html.twig', [
 			'user' => $user,
 			'userInfos' => $userInfos,
 			'userInitials' => $userInitials
@@ -43,7 +44,7 @@ final class ProfileController extends AbstractController {
 			return $this->redirectToRoute( 'app_profile_index', [], Response::HTTP_SEE_OTHER );
 		}
 
-		return $this->render( 'profile/new.html.twig', [ 
+		return $this->render( 'profile/new.html.twig', [
 			'user' => $user,
 			'form' => $form,
 		] );
@@ -51,7 +52,7 @@ final class ProfileController extends AbstractController {
 
 	#[Route('/{id}', name: 'app_profile_show', methods: [ 'GET' ]) ]
 	public function show( User $user ): Response {
-		return $this->render( 'profile/show.html.twig', [ 
+		return $this->render( 'profile/show.html.twig', [
 			'user' => $user,
 		] );
 	}
@@ -67,7 +68,7 @@ final class ProfileController extends AbstractController {
 			return $this->redirectToRoute( 'app_profile_index', [], Response::HTTP_SEE_OTHER );
 		}
 
-		return $this->render( 'profile/edit.html.twig', [ 
+		return $this->render( 'profile/edit.html.twig', [
 			'user' => $user,
 			'form' => $form,
 		] );

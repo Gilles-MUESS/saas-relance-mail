@@ -21,13 +21,13 @@ class GoogleController extends AbstractController {
 		// Redirige vers Google pour l'authentification
 		return $clientRegistry
 			->getClient( 'google' )
-			->redirect( [ 
+			->redirect( [
 				'profile',
 				'email',
 				'https://www.googleapis.com/auth/gmail.send',
 				'https://www.googleapis.com/auth/gmail.readonly'
 			],
-				[ 
+				[
 					'access_type' => 'offline',
 					'prompt' => 'consent'
 				] );
@@ -64,6 +64,34 @@ class GoogleController extends AbstractController {
 		$em->flush();
 
 		$this->addFlash( 'success', 'Compte Google connecté !' );
+		return $this->redirectToRoute( 'app_profile_index' );
+	}
+
+	#[Route('/app/disconnect/google/{id}', name: 'disconnect_google') ]
+	public function disconnect(
+		Request $request,
+		EntityManagerInterface $em,
+		Security $security
+	): RedirectResponse {
+		/** @var \App\Entity\User $appUser */
+		$appUser = $security->getUser();
+		$id = $request->get( 'id' );
+
+		$account = $em->getRepository( UserEmailAccount::class)->findOneBy( [ 'id' => $id, 'user' => $appUser ] );
+
+		if ( $account ) {
+			try {
+
+				$em->remove( $account );
+				$em->flush();
+				$this->addFlash( 'success', 'Compte Google déconnecté !' );
+			} catch (\Exception $e) {
+				$this->addFlash( 'error', 'Erreur lors de la déconnexion du compte Google : ' . $e->getMessage() );
+			}
+		} else {
+			$this->addFlash( 'error', 'Aucun compte Google trouvé à déconnecter.' );
+		}
+
 		return $this->redirectToRoute( 'app_profile_index' );
 	}
 }

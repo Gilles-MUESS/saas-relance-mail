@@ -22,7 +22,7 @@ class Sequence {
 	public const STATUS_ARCHIVED = 'Archivé';
 	public const STATUS_FAIL = 'Echoué';
 	public const STATUS_SUCCESS = 'Terminé';
-	public const STATUSES = [ 
+	public const STATUSES = [
 		self::STATUS_DRAFT,
 		self::STATUS_ACTIVE,
 		self::STATUS_ARCHIVED,
@@ -52,6 +52,10 @@ class Sequence {
 	 */
 	#[ORM\ManyToMany(targetEntity: Recipient::class, inversedBy: 'sequences') ]
 	private Collection $recipient;
+
+	#[ORM\ManyToOne(inversedBy: 'sequences') ]
+	#[ORM\JoinColumn(nullable: false) ]
+	private ?UserEmailAccount $userEmailAccount = null;
 
 	public function __construct() {
 		$this->messages = new ArrayCollection();
@@ -146,6 +150,15 @@ class Sequence {
 
 	public function removeRecipient( Recipient $recipient ): static {
 		$this->recipient->removeElement( $recipient );
+
+		return $this;
+	}
+	public function getUserEmailAccount(): ?UserEmailAccount {
+		return $this->userEmailAccount;
+	}
+
+	public function setUserEmailAccount( ?UserEmailAccount $userEmailAccount ): static {
+		$this->userEmailAccount = $userEmailAccount;
 
 		return $this;
 	}

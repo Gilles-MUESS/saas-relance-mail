@@ -27,6 +27,7 @@ class SendPlannedEmailsCommand extends Command {
 		$emails = $this->em->getRepository( Message::class)->findToSend( $now );
 
 		foreach ( $emails as $message ) {
+			$account = $message->getSequence()->getUserEmailAccount();
 			$email = ( new Email() )
 				->from( 'noreply@mailautomation.com' )
 				->subject( $message->getSubject() )
@@ -35,7 +36,16 @@ class SendPlannedEmailsCommand extends Command {
 			foreach ( $message->getSequence()->getRecipient() as $recipient ) {
 				$email->to( $recipient->getEmail() );
 			}
-			// Ajoute les pièces jointes si besoin
+
+			// Ajout de pièces jointes si besoin
+			// $email->attachFromPath('/chemin/vers/fichier.pdf');
+
+			// Création du transport dynamique
+			$dsn = sprintf( 'dynamic://default?provider=%s&email=%s&token=%s',
+				$account->getProvider(),
+				urlencode( $account->getEmail() ),
+				urlencode( $account->getAccessToken() )
+			);
 
 			$this->bus->dispatch( new SendEmailMessage( $email ) );
 			$message->setIsSent( true ); // ou suppression de la queue
