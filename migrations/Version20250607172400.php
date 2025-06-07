@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250531101909 extends AbstractMigration
+final class Version20250607172400 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -30,7 +30,7 @@ final class Version20250531101909 extends AbstractMigration
             CREATE TABLE recipient (id INT AUTO_INCREMENT NOT NULL, user_id INT NOT NULL, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, INDEX IDX_6804FB49A76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE sequence (id INT AUTO_INCREMENT NOT NULL, label_id INT DEFAULT NULL, user_id INT NOT NULL, created_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)', status VARCHAR(255) NOT NULL, INDEX IDX_5286D72B33B92F39 (label_id), INDEX IDX_5286D72BA76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
+            CREATE TABLE sequence (id INT AUTO_INCREMENT NOT NULL, label_id INT DEFAULT NULL, user_id INT NOT NULL, user_email_account_id INT NOT NULL, created_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)', status VARCHAR(255) NOT NULL, INDEX IDX_5286D72B33B92F39 (label_id), INDEX IDX_5286D72BA76ED395 (user_id), INDEX IDX_5286D72B4ACDEFB8 (user_email_account_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
         $this->addSql(<<<'SQL'
             CREATE TABLE sequence_recipient (sequence_id INT NOT NULL, recipient_id INT NOT NULL, INDEX IDX_C35DFA4098FB19AE (sequence_id), INDEX IDX_C35DFA40E92F8F78 (recipient_id), PRIMARY KEY(sequence_id, recipient_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
@@ -46,6 +46,9 @@ final class Version20250531101909 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             CREATE TABLE `user` (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL COMMENT '(DC2Type:json)', password VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)', is_verified TINYINT(1) NOT NULL, UNIQUE INDEX UNIQ_IDENTIFIER_EMAIL (email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
+        SQL);
+        $this->addSql(<<<'SQL'
+            CREATE TABLE user_email_account (id INT AUTO_INCREMENT NOT NULL, user_id INT NOT NULL, provider VARCHAR(255) DEFAULT NULL, email VARCHAR(255) DEFAULT NULL, access_token VARCHAR(255) NOT NULL, refresh_token VARCHAR(255) DEFAULT NULL, access_token_expiry DATE DEFAULT NULL COMMENT '(DC2Type:date_immutable)', provider_user_id VARCHAR(255) DEFAULT NULL, INDEX IDX_2E78933BA76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
         $this->addSql(<<<'SQL'
             CREATE TABLE user_info (id INT AUTO_INCREMENT NOT NULL, user_id INT NOT NULL, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, company VARCHAR(255) DEFAULT NULL, address VARCHAR(255) DEFAULT NULL, cp VARCHAR(255) DEFAULT NULL, city VARCHAR(255) DEFAULT NULL, UNIQUE INDEX UNIQ_B1087D9EA76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
@@ -66,6 +69,9 @@ final class Version20250531101909 extends AbstractMigration
             ALTER TABLE sequence ADD CONSTRAINT FK_5286D72BA76ED395 FOREIGN KEY (user_id) REFERENCES `user` (id) ON DELETE CASCADE
         SQL);
         $this->addSql(<<<'SQL'
+            ALTER TABLE sequence ADD CONSTRAINT FK_5286D72B4ACDEFB8 FOREIGN KEY (user_email_account_id) REFERENCES user_email_account (id)
+        SQL);
+        $this->addSql(<<<'SQL'
             ALTER TABLE sequence_recipient ADD CONSTRAINT FK_C35DFA4098FB19AE FOREIGN KEY (sequence_id) REFERENCES sequence (id) ON DELETE CASCADE
         SQL);
         $this->addSql(<<<'SQL'
@@ -82,6 +88,9 @@ final class Version20250531101909 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             ALTER TABLE signature ADD CONSTRAINT FK_AE880141A76ED395 FOREIGN KEY (user_id) REFERENCES `user` (id) ON DELETE CASCADE
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE user_email_account ADD CONSTRAINT FK_2E78933BA76ED395 FOREIGN KEY (user_id) REFERENCES `user` (id)
         SQL);
         $this->addSql(<<<'SQL'
             ALTER TABLE user_info ADD CONSTRAINT FK_B1087D9EA76ED395 FOREIGN KEY (user_id) REFERENCES `user` (id)
@@ -104,6 +113,9 @@ final class Version20250531101909 extends AbstractMigration
             ALTER TABLE sequence DROP FOREIGN KEY FK_5286D72BA76ED395
         SQL);
         $this->addSql(<<<'SQL'
+            ALTER TABLE sequence DROP FOREIGN KEY FK_5286D72B4ACDEFB8
+        SQL);
+        $this->addSql(<<<'SQL'
             ALTER TABLE sequence_recipient DROP FOREIGN KEY FK_C35DFA4098FB19AE
         SQL);
         $this->addSql(<<<'SQL'
@@ -120,6 +132,9 @@ final class Version20250531101909 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             ALTER TABLE signature DROP FOREIGN KEY FK_AE880141A76ED395
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE user_email_account DROP FOREIGN KEY FK_2E78933BA76ED395
         SQL);
         $this->addSql(<<<'SQL'
             ALTER TABLE user_info DROP FOREIGN KEY FK_B1087D9EA76ED395
@@ -150,6 +165,9 @@ final class Version20250531101909 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             DROP TABLE `user`
+        SQL);
+        $this->addSql(<<<'SQL'
+            DROP TABLE user_email_account
         SQL);
         $this->addSql(<<<'SQL'
             DROP TABLE user_info

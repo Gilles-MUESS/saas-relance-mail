@@ -41,7 +41,6 @@ final class SequenceController extends AbstractController {
 
 			foreach ( $sequence->getMessages() as $message ) {
 				$message->setSequence( $sequence );
-				$message->setIsSent( false );
 			}
 
 			$entityManager->persist( $sequence );
@@ -51,7 +50,7 @@ final class SequenceController extends AbstractController {
 			return $this->redirectToRoute( 'app_dashboard', [], Response::HTTP_SEE_OTHER );
 		}
 
-		return $this->render( 'sequence/new.html.twig', [ 
+		return $this->render( 'sequence/new.html.twig', [
 			'sequence' => $sequence,
 			'form' => $form,
 			'recipientForm' => $recipientForm,
@@ -61,7 +60,7 @@ final class SequenceController extends AbstractController {
 
 	#[Route('/{id}', name: 'app_sequence_show', methods: [ 'GET' ]) ]
 	public function show( Sequence $sequence ): Response {
-		return $this->render( 'sequence/show.html.twig', [ 
+		return $this->render( 'sequence/show.html.twig', [
 			'sequence' => $sequence,
 		] );
 	}
@@ -83,7 +82,6 @@ final class SequenceController extends AbstractController {
 
 			foreach ( $sequence->getMessages() as $message ) {
 				$message->setSequence( $sequence );
-				$message->setIsSent( false );
 			}
 
 			$entityManager->persist( $sequence );
@@ -93,7 +91,7 @@ final class SequenceController extends AbstractController {
 			return $this->redirectToRoute( 'app_dashboard', [], Response::HTTP_SEE_OTHER );
 		}
 
-		return $this->render( 'sequence/edit.html.twig', [ 
+		return $this->render( 'sequence/edit.html.twig', [
 			'sequence' => $sequence,
 			'form' => $form,
 			'recipientForm' => $recipientForm,
@@ -108,19 +106,19 @@ final class SequenceController extends AbstractController {
 				$entityManager->remove( $sequence );
 				$entityManager->flush();
 
-				return $this->json( [ 
+				return $this->json( [
 					'success' => true,
 					'message' => 'La séquence a été supprimée avec succès.',
 				] );
 			} catch (\Exception $e) {
-				return $this->json( [ 
+				return $this->json( [
 					'success' => false,
 					'message' => $e->getMessage(),
 				], 400 );
 			}
 		}
 
-		return $this->json( [ 
+		return $this->json( [
 			'success' => false,
 			'message' => 'La séquence n\'a pas pu être supprimée.',
 		], 400 );

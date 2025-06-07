@@ -37,8 +37,8 @@ class Message {
 	#[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE') ]
 	private ?Sequence $sequence = null;
 
-	#[ORM\Column ]
-	private ?bool $isSent = null;
+	#[ORM\Column(type: 'boolean')]
+	private bool $isSent = false;
 
 	public function getId(): ?int {
 		return $this->id;

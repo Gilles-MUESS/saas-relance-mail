@@ -41,8 +41,16 @@ services:
         volumes:
             - ./:/app
             - ./docker/wait-for-it.sh:/usr/local/bin/wait-for-it.sh
+        environment:
+            MARIADB_USER: ${DB_USER:-app}
+            MARIADB_PASSWORD: ${DB_PASSWORD:-app}
+            MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+            MARIADB_DATABASE: ${COMPOSE_PROJECT_NAME:-app}
+            DATABASE_URL: mysql://${DB_USER:-app}:${DB_PASSWORD:-app}@database:3306/${COMPOSE_PROJECT_NAME:-app}?serverVersion=11.4.5-MariaDB&charset=utf8mb4
         depends_on:
             - php
+            - database
+            - mailer
         networks:
             - lan
 
@@ -66,6 +74,7 @@ services:
         volumes:
             - ./:/app
         depends_on:
+            - php
             - database
         networks:
             - lan

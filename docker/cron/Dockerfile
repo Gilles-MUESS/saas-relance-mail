@@ -14,4 +14,4 @@ RUN chmod 0644 /etc/cron.d/cronjobs && crontab /etc/cron.d/cronjobs
 RUN touch /var/log/cron.log
 
 # Entrypoint pour lancer cron au premier plan
-CMD ["cron", "-f"]
+CMD ["sh", "-c", "cron -f && tail -f /var/log/cron.log"]

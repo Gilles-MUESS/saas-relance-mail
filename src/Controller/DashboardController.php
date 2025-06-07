@@ -47,7 +47,7 @@ final class DashboardController extends AbstractController {
 			$nextRelances[ $sequence->getId()] = $this->sequenceService->getNextMessageDate( $sequence );
 		}
 
-		return $this->render( 'dashboard/index.html.twig', [ 
+		return $this->render( 'dashboard/index.html.twig', [
 			'sequencesActive' => $sequencesActive,
 			'sequencesFail' => $sequencesFail,
 			'sequencesSuccess' => $sequencesSuccess,
