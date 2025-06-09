@@ -20,5 +20,10 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\Mailer\Provider\GmailProvider:
+        arguments:
+            $clientId: '%env(OAUTH_GOOGLE_CLIENT_ID)%'
+            $clientSecret: '%env(OAUTH_GOOGLE_CLIENT_SECRET)%'
+        tags: ['app.email_provider']
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

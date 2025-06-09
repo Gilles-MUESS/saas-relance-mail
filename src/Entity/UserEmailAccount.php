@@ -43,9 +43,28 @@ class UserEmailAccount {
     #[ORM\OneToMany(targetEntity: Sequence::class, mappedBy: 'userEmailAccount')]
     private Collection $sequences;
 
+    /**
+     * @var Collection<int, QueuedEmail>
+     */
+    #[ORM\OneToMany(targetEntity: QueuedEmail::class, mappedBy: 'account')]
+    private Collection $queuedEmails;
+
     public function __construct()
     {
         $this->sequences = new ArrayCollection();
+        $this->queuedEmails = new ArrayCollection();
+    }
+    
+    /**
+     * Vérifie si le compte email est activé et utilisable
+     * 
+     * @return bool True si le compte est activé, false sinon
+     */
+    public function isEnabled(): bool
+    {
+        // Un compte est considéré comme activé s'il a un access token valide
+        return !empty($this->access_token) && 
+               ($this->access_token_expiry === null || $this->access_token_expiry > new \DateTimeImmutable());
     }
 
 	public function getId(): ?int {
@@ -149,6 +168,41 @@ class UserEmailAccount {
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QueuedEmail>
+     */
+    public function getQueuedEmails(): Collection
+    {
+        return $this->queuedEmails;
+    }
+
+    public function addQueuedEmail(QueuedEmail $queuedEmail): static
+    {
+        if (!$this->queuedEmails->contains($queuedEmail)) {
+            $this->queuedEmails->add($queuedEmail);
+            $queuedEmail->setAccount($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Supprime un email de la file d'attente
+     * 
+     * @param QueuedEmail $queuedEmail L'email à retirer de la file d'attente
+     * @return static
+     * @throws \RuntimeException Si l'email n'appartient pas à ce compte
+     */
+    public function removeQueuedEmail(QueuedEmail $queuedEmail): static
+    {
+        if ($queuedEmail->getAccount() !== $this) {
+            throw new \RuntimeException('Cet email ne peut pas être supprimé car il n\'appartient pas à ce compte');
+        }
+        
+        $this->queuedEmails->removeElement($queuedEmail);
         return $this;
     }
 }

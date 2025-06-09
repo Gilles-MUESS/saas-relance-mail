@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class SequenceType extends AbstractType {
@@ -71,6 +72,15 @@ class SequenceType extends AbstractType {
 					'class' => 'form-select',
 				],
 			] )
+            ->add('status', ChoiceType::class, [
+                'choices' => [
+                    'Brouillon' => Sequence::STATUS_DRAFT,
+                    'Activer maintenant' => Sequence::STATUS_ACTIVE,
+                ],
+                'expanded' => true,
+                'multiple' => false,
+                'data' => Sequence::STATUS_DRAFT, // Valeur par défaut
+            ])
 		;
 	}
 

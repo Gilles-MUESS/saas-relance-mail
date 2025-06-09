@@ -1,1 +1,1 @@
-*/5 * * * * root cd /app && /usr/local/bin/php bin/console emails:send-planned -vvv >> /var/log/cron.log 2>&1
+*/5 * * * * cd /app && /usr/local/bin/php bin/console app:email:process-queue --batch-size=50 --max-runtime=240 -vvv >> /var/log/email-queue.log 2>&1

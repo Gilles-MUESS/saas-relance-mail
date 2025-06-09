@@ -11,7 +11,7 @@ COPY cronjobs /etc/cron.d/cronjobs
 RUN chmod 0644 /etc/cron.d/cronjobs && crontab /etc/cron.d/cronjobs
 
 # Créer un fichier de log pour cron
-RUN touch /var/log/cron.log
+RUN touch /var/log/email-queue.log
 
 # Entrypoint pour lancer cron au premier plan
-CMD ["sh", "-c", "cron -f && tail -f /var/log/cron.log"]
+CMD ["sh", "-c", "cron -f && tail -f /var/log/email-queue.log"]

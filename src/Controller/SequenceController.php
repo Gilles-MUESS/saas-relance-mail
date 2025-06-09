@@ -7,6 +7,7 @@ use App\Entity\Sequence;
 use App\Form\SequenceType;
 use App\Form\RecipientType;
 use App\Service\UserService;
+use App\Service\SequenceService;
 use App\Form\SequenceLabelType;
 use App\Repository\SequenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,8 +19,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/app/sequence') ]
 final class SequenceController extends AbstractController {
-	public function __construct( private UserService $userService ) {
-	}
+	public function __construct(
+        private UserService $userService,
+        private SequenceService $sequenceService,
+        private EntityManagerInterface $entityManager
+    ) {
+    }
 
 	#[Route('/new', name: 'app_sequence_new', methods: [ 'GET', 'POST' ]) ]
 	public function new( Request $request, EntityManagerInterface $entityManager ): Response {
@@ -37,16 +42,29 @@ final class SequenceController extends AbstractController {
 		if ( $form->isSubmitted() && $form->isValid() ) {
 			$sequence->setCreatedAt( new \DateTimeImmutable() );
 			$sequence->setUser( $user );
-			$sequence->setStatus( Sequence::STATUS_DRAFT );
 
 			foreach ( $sequence->getMessages() as $message ) {
 				$message->setSequence( $sequence );
 			}
 
+            // TODO : traitement de pièces jointes
+
 			$entityManager->persist( $sequence );
 			$entityManager->flush();
 
-			$this->addFlash( 'success', 'La séquence a été créée avec succès.' );
+			if ($sequence->getStatus() === Sequence::STATUS_ACTIVE) {
+                try {
+                    $this->sequenceService->activateSequence($sequence);
+                    $this->addFlash('success', 'La séquence a été créée et activée avec succès.');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur lors de l\'activation de la séquence : ' . $e->getMessage());
+                    $sequence->setStatus(Sequence::STATUS_DRAFT);
+                    $entityManager->flush();
+                }
+            } else {
+                $this->addFlash('success', 'La séquence a été créée en tant que brouillon.');
+            }
+
 			return $this->redirectToRoute( 'app_dashboard', [], Response::HTTP_SEE_OTHER );
 		}
 
@@ -78,11 +96,12 @@ final class SequenceController extends AbstractController {
 		if ( $form->isSubmitted() && $form->isValid() ) {
 			$sequence->setCreatedAt( new \DateTimeImmutable() );
 			$sequence->setUser( $user );
-			$sequence->setStatus( Sequence::STATUS_DRAFT );
 
 			foreach ( $sequence->getMessages() as $message ) {
 				$message->setSequence( $sequence );
 			}
+
+            // TODO : traitement de pièces jointes
 
 			$entityManager->persist( $sequence );
 			$entityManager->flush();

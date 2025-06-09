@@ -76,6 +76,16 @@
 			<main>
 				<div class="container-fluid">
 					<div class="row">
+						{% for message in app.flashes('success') %}
+							<div class="alert alert-success">
+								{{ message }}
+							</div>
+						{% endfor %}
+						{% for message in app.flashes('error') %}
+							<div class="alert alert-danger">
+								{{ message }}
+							</div>
+						{% endfor %}
 						<h1 class="d-flex gap-3 align-items-center">
 							<i class="bi bi-display"></i>
 							{% block appTitle %}{% endblock %}

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6d3e6384427d9aeb256bfa5d7e7a76e5",
+    "content-hash": "e978bd9aefe4215321b53d0668843ca1",
     "packages": [
         {
             "name": "bw/active-menu-item-bundle",
